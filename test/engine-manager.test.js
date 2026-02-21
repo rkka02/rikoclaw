@@ -6,7 +6,7 @@ import path from "node:path";
 import { EngineManager } from "../src/core/engine-manager.ts";
 
 function withManager(run, options = {}) {
-  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "zerotwo_claw-engine-test-"));
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "rikoclaw-engine-test-"));
   const overridesPath = path.join(tempDir, "engine-overrides.json");
 
   if (options.overrides) {

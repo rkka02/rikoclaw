@@ -4,7 +4,7 @@ import path from "node:path";
 import type { Config } from "../utils/config.js";
 import type { EngineType } from "./llm-runner.js";
 
-export const RESTART_DIRECTIVE_FILE_NAME = ".zerotwo_claw-restart.json";
+export const RESTART_DIRECTIVE_FILE_NAME = ".rikoclaw-restart.json";
 
 const RESTART_PENDING_FILE_NAME = "restart-pending.json";
 const RESTART_PENDING_VERSION = 1;
@@ -547,12 +547,12 @@ function clampInt(value: number, min: number, max: number): number {
 function sanitizeLaunchLabel(value: string): string {
   const trimmed = value.trim();
   if (!trimmed) {
-    return "com.zerotwo_claw.self-restart";
+    return "com.rikoclaw.self-restart";
   }
   const normalized = trimmed
     .replace(/[^a-zA-Z0-9._-]+/g, "-")
     .replace(/^-+|-+$/g, "");
-  return normalized || "com.zerotwo_claw.self-restart";
+  return normalized || "com.rikoclaw.self-restart";
 }
 
 function buildInheritedEnvPrefix(): string {

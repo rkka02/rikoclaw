@@ -1,8 +1,8 @@
-# ZeroTwo Claw Specification
+# rikoclaw Specification
 
 ## Purpose
 
-ZeroTwo Claw connects Discord interactions to local CLI coding agents and manages execution, sessions, and scheduling.
+rikoclaw connects Discord interactions to local CLI coding agents and manages execution, sessions, and scheduling.
 
 ## Stack
 

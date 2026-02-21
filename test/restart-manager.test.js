@@ -9,14 +9,14 @@ import {
 } from "../src/core/restart-manager.ts";
 
 function withManager(run, options = {}) {
-  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "zerotwo_claw-restart-test-"));
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "rikoclaw-restart-test-"));
   const manager = new RestartManager({
     dataDir: tempDir,
     selfRestartEnabled: options.selfRestartEnabled ?? true,
     selfRestartCommand: options.selfRestartCommand ?? "echo restart",
     selfRestartDelaySec: options.selfRestartDelaySec ?? 3,
     selfRestartMaxPendingMinutes: options.selfRestartMaxPendingMinutes ?? 60,
-    selfRestartLaunchLabel: options.selfRestartLaunchLabel ?? "com.zerotwo_claw.test",
+    selfRestartLaunchLabel: options.selfRestartLaunchLabel ?? "com.rikoclaw.test",
   });
 
   try {
@@ -49,7 +49,7 @@ test("readDirective parses restart json from output directory", () => {
     assert.equal(parsed.directive?.reason, "runtime code changed");
     assert.equal(parsed.directive?.resumePrompt, "restart 완료 후 테스트를 이어서 실행해.");
     assert.equal(parsed.directive?.delaySec, 5);
-    assert.deepEqual(parsed.consumedFileNames, [".zerotwo_claw-restart.json"]);
+    assert.deepEqual(parsed.consumedFileNames, [".rikoclaw-restart.json"]);
   });
 });
 

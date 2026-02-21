@@ -93,6 +93,6 @@ export class ClaudeSessionScanner {
 
 function decodeProjectPath(encoded: string): string {
   // Claude CLI encodes paths: / → - , leading - stripped
-  // e.g. "-Users-mw-Desktop-zerotwo_claw" → "<PROJECT_ROOT>"
+  // e.g. "-Users-mw-Desktop-rikoclaw" → "<PROJECT_ROOT>"
   return "/" + encoded.replace(/^-/, "").replace(/-/g, "/");
 }

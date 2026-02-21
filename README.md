@@ -1,6 +1,6 @@
-# ZeroTwo Claw
+# rikoclaw
 
-ZeroTwo Claw is a Discord bot that runs coding agents through CLI backends (`claude`, optional `codex`) with session persistence, queueing, scheduled automation, and optional Mecho memory.
+rikoclaw is a Discord bot that runs coding agents through CLI backends (`claude`, optional `codex`) with session persistence, queueing, scheduled automation, and optional Mecho memory.
 
 This README reflects the current `main` codebase state.
 
@@ -96,7 +96,7 @@ These are discovered automatically from `skills/*/SKILL.md` and exposed in syste
 
 ```bash
 git clone <repository-url>
-cd zerotwo_claw
+cd rikoclaw
 npm install
 cp .env.example .env
 npm start
@@ -159,13 +159,13 @@ Storage-related defaults:
 
 ## Attachment Bridge and Restart Signal
 
-For each run, ZeroTwo Claw creates a temporary turn workspace under `.runtime/turn-work/...`.
+For each run, rikoclaw creates a temporary turn workspace under `.runtime/turn-work/...`.
 
 - Incoming files (staged local files and Discord attachments) are copied into that turn input folder.
 - Files created in turn output are sent back to Discord automatically.
 - Turn work folders are removed after completion.
 - To request runtime restart from an agent response, write JSON to:
-  - `.zerotwo_claw-restart.json` in the turn output folder
+  - `.rikoclaw-restart.json` in the turn output folder
 
 Example:
 

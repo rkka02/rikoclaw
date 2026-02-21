@@ -1,4 +1,4 @@
-# Build `mecho/` SQL+XML Memory Backbone and Wire Delta Injection into ZeroTwo Claw
+# Build `mecho/` SQL+XML Memory Backbone and Wire Delta Injection into rikoclaw
 
 This ExecPlan is a living document. The sections `Progress`, `Surprises & Discoveries`, `Decision Log`, and `Outcomes & Retrospective` must be kept up to date as work proceeds.
 
@@ -6,9 +6,9 @@ This document is maintained in accordance with `PLANS.md` at repository root.
 
 ## Purpose / Big Picture
 
-After this change, each mode can have isolated memory state (core + curated) stored in its own SQLite database under `mecho/data/modes/<mode_id>/mecho.db`, and ZeroTwo Claw will inject memory into prompts using an XML payload only when needed. First turn for a session sends full memory context; subsequent turns send only a delta when memory changed. Modes will be able to read/write/update memory only through API calls to the `mecho` service, not by direct file/database access from ZeroTwo Claw.
+After this change, each mode can have isolated memory state (core + curated) stored in its own SQLite database under `mecho/data/modes/<mode_id>/mecho.db`, and rikoclaw will inject memory into prompts using an XML payload only when needed. First turn for a session sends full memory context; subsequent turns send only a delta when memory changed. Modes will be able to read/write/update memory only through API calls to the `mecho` service, not by direct file/database access from rikoclaw.
 
-Observable behavior: running ZeroTwo Claw with mecho enabled should call `POST /v1/turn/prepare` before runner execution, prepend XML to prompt when mode is `full` or `delta`, and call `POST /v1/turn/ack` afterward. Repeated turns with unchanged memory should produce `mode=none` and no XML injection.
+Observable behavior: running rikoclaw with mecho enabled should call `POST /v1/turn/prepare` before runner execution, prepend XML to prompt when mode is `full` or `delta`, and call `POST /v1/turn/ack` afterward. Repeated turns with unchanged memory should produce `mode=none` and no XML injection.
 
 ## Progress
 
@@ -18,18 +18,18 @@ Observable behavior: running ZeroTwo Claw with mecho enabled should call `POST /
 - [x] (2026-02-11 12:08Z) Implemented mecho SQLite schema and repositories (core/curated/revision/events/session sync/prepare log).
 - [x] (2026-02-11 12:12Z) Implemented `prepare`/`ack` APIs with XML full/delta rendering.
 - [x] (2026-02-11 12:15Z) Implemented memory CRUD APIs for core/curated (API-only access path).
-- [x] (2026-02-11 12:21Z) Added thin ZeroTwo Claw mecho API client and queue injection/ack hook.
+- [x] (2026-02-11 12:21Z) Added thin rikoclaw mecho API client and queue injection/ack hook.
 - [x] (2026-02-11 12:28Z) Added env/config wiring and README updates.
 - [x] (2026-02-11 12:35Z) Validated with typecheck/tests and manual prepare→ack scenario.
 
 ## Surprises & Discoveries
 
-- Observation: Current ZeroTwo Claw no longer passes any system prompt into runners, so memory injection can be added cleanly by prepending text to `prompt` in one place.
+- Observation: Current rikoclaw no longer passes any system prompt into runners, so memory injection can be added cleanly by prepending text to `prompt` in one place.
   Evidence: `src/core/queue-manager.ts` currently calls `runner.run({ prompt, sessionId, model, onEvent })`.
 
 ## Decision Log
 
-- Decision: Create `mecho/` as a separate Node/TypeScript service and keep ZeroTwo Claw integration to one thin client plus queue hook.
+- Decision: Create `mecho/` as a separate Node/TypeScript service and keep rikoclaw integration to one thin client plus queue hook.
   Rationale: User requested modularization and minimal contact surface with existing repo.
   Date/Author: 2026-02-11 / Codex
 
@@ -43,7 +43,7 @@ Implemented service and integration end-to-end. The remaining gap is archival ve
 
 ## Context and Orientation
 
-ZeroTwo Claw currently enqueues prompts in `src/core/queue-manager.ts` and then calls runner adapters (`ClaudeRunner`/`CodexRunner`) with a plain prompt string. There is no memory-injection logic now. Configuration is loaded through `src/utils/config.ts` and passed into the queue manager through `createContext` in `src/bot.ts`.
+rikoclaw currently enqueues prompts in `src/core/queue-manager.ts` and then calls runner adapters (`ClaudeRunner`/`CodexRunner`) with a plain prompt string. There is no memory-injection logic now. Configuration is loaded through `src/utils/config.ts` and passed into the queue manager through `createContext` in `src/bot.ts`.
 
 In this repository, the term "delta injection" means: for a given session key, send a full XML memory context only once, then only send changes since the last acknowledged revision. A "revision" is a monotonically increasing integer per mode memory store, incremented on each core/curated write or delete. A "session key" is a stable identifier used to track what revision has already been injected to that conversation.
 
@@ -55,7 +55,7 @@ First, create the `mecho/` project scaffold with a small HTTP API server and SQL
 
 Next, implement `POST /v1/turn/prepare` and `POST /v1/turn/ack`. `prepare` determines whether to return `full`, `delta`, or `none`, renders XML, and records a `prepare_id` row. `ack` marks the prepared turn as acknowledged and advances session sync revision only on success.
 
-Then, add a thin ZeroTwo Claw integration client under `src/integrations/mecho-client.ts`. Modify `QueueManager.runTask` to call prepare before each runner invocation, prepend returned XML to the prompt, run the model, then call ack with success/failure. Keep fallback behavior safe: if mecho API fails, continue normal runner execution with original prompt.
+Then, add a thin rikoclaw integration client under `src/integrations/mecho-client.ts`. Modify `QueueManager.runTask` to call prepare before each runner invocation, prepend returned XML to the prompt, run the model, then call ack with success/failure. Keep fallback behavior safe: if mecho API fails, continue normal runner execution with original prompt.
 
 Finally, add config toggles (`MECHO_ENABLED`, `MECHO_API_URL`, `MECHO_TIMEOUT_MS`, `MECHO_DEFAULT_MODE_ID`), update `.env.example`, and validate end-to-end with tests/typecheck and a manual API simulation.
 
@@ -79,7 +79,7 @@ All commands below are run from `<PROJECT_ROOT>` unless stated otherwise.
 4. Implement XML renderers:
    - full: `<memory_context>`
    - delta: `<memory_delta>`
-5. Add ZeroTwo Claw client + queue integration with graceful fallback.
+5. Add rikoclaw client + queue integration with graceful fallback.
 6. Add config/env wiring and docs.
 7. Run:
    - `npx tsc --noEmit`
@@ -99,24 +99,24 @@ Acceptance criteria are behavior-driven:
 - With mecho enabled and memory present, the first run for a session prepends `<memory_context ...>` XML.
 - After successful ack, a repeated run with no memory changes returns `mode=none` and injects no XML.
 - After changing curated/core through API, next run returns `<memory_delta ...>` with only changed blocks.
-- ZeroTwo Claw continues processing prompts when mecho is unavailable (logs warning, no crash, no queue deadlock).
+- rikoclaw continues processing prompts when mecho is unavailable (logs warning, no crash, no queue deadlock).
 
 Verification commands:
 
 - `npx tsc --noEmit`
 - `npm test`
-- manual API calls against `mecho` service and log inspection in ZeroTwo Claw.
+- manual API calls against `mecho` service and log inspection in rikoclaw.
 
 ## Idempotence and Recovery
 
-Migration creation is idempotent (`CREATE TABLE IF NOT EXISTS`). Re-running mecho server startup should not corrupt data. If a `prepare` call succeeds but model run fails, `ack(status=failed)` keeps `last_acked_rev` unchanged so the same delta can be retried later. If mecho API is down, ZeroTwo Claw executes without injection as a safe fallback.
+Migration creation is idempotent (`CREATE TABLE IF NOT EXISTS`). Re-running mecho server startup should not corrupt data. If a `prepare` call succeeds but model run fails, `ack(status=failed)` keeps `last_acked_rev` unchanged so the same delta can be retried later. If mecho API is down, rikoclaw executes without injection as a safe fallback.
 
 ## Artifacts and Notes
 
 Implementation artifacts to include after coding:
 
 - Mecho schema SQL at `mecho/src/persistence/migrations/001_init.sql`.
-- ZeroTwo Claw integration file `src/integrations/mecho-client.ts`.
+- rikoclaw integration file `src/integrations/mecho-client.ts`.
 - Queue hook changes in `src/core/queue-manager.ts`.
 - Sample prepare/ack JSON responses from local run.
 
@@ -154,7 +154,7 @@ Required API interfaces:
 - `GET/PUT /v1/memory/core`
 - `GET/PUT/DELETE /v1/memory/curated`
 
-ZeroTwo Claw internal interfaces to add:
+rikoclaw internal interfaces to add:
 
 - `MechoClient.prepareTurn(input): Promise<PrepareTurnResult | null>`
 - `MechoClient.ackTurn(input): Promise<void>`

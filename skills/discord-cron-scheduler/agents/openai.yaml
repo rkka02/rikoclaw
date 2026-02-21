@@ -1,4 +1,4 @@
 interface:
   display_name: "Discord Cron Scheduler"
   short_description: "Manage KST cron schedules with optional agent_id binding"
-  default_prompt: "Create or edit ZeroTwo Claw schedule entries in KST, validating cron and keeping agent_id mappings correct."
+  default_prompt: "Create or edit rikoclaw schedule entries in KST, validating cron and keeping agent_id mappings correct."

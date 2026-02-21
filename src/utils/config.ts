@@ -138,7 +138,7 @@ export function loadConfig(): Config {
     ),
     selfRestartLaunchLabel: (
       process.env.SELF_RESTART_LAUNCH_LABEL
-      || "com.zerotwo_claw.self-restart"
+      || "com.rikoclaw.self-restart"
     ).trim(),
     mechoEnabled: parseBoolean(process.env.MECHO_ENABLED, false),
     mechoApiUrl: (process.env.MECHO_API_URL || "http://127.0.0.1:3100").trim(),

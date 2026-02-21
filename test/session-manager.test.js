@@ -6,7 +6,7 @@ import path from "node:path";
 import { SessionManager } from "../src/core/session-manager.ts";
 
 function withManager(run) {
-  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "zerotwo_claw-session-test-"));
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "rikoclaw-session-test-"));
   const dbPath = path.join(tempDir, "sessions.db");
   const manager = new SessionManager(dbPath);
   try {

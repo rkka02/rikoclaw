@@ -1,12 +1,12 @@
 ---
 name: self-restart-resume
-description: Request self-restart of the ZeroTwo Claw bot process with automatic session resume. Use when runtime code or configuration changes require a process restart, when the user asks to restart/reboot the bot without losing session continuity, or after deploying new skills/hooks. Triggers on keywords like "restart", "reboot", "재시작", "리스타트".
+description: Request self-restart of the rikoclaw bot process with automatic session resume. Use when runtime code or configuration changes require a process restart, when the user asks to restart/reboot the bot without losing session continuity, or after deploying new skills/hooks. Triggers on keywords like "restart", "reboot", "재시작", "리스타트".
 ---
 
 # Self Restart Resume
 
 ## Required Action
-Write `.zerotwo_claw-restart.json` into the turn output directory (the same folder used for agent->user attachments).
+Write `.rikoclaw-restart.json` into the turn output directory (the same folder used for agent->user attachments).
 
 ## JSON Schema
 ```json
