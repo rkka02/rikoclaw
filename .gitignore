@@ -1,0 +1,49 @@
+# Environment & secrets
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+
+# Build
+dist/
+
+# Data & databases
+data/
+mecho/data/
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.db.bak_*
+*.sqlite
+*.sqlite3
+
+# Runtime
+.runtime/
+.tmp/
+.playwright-mcp/
+
+# OS
+.DS_Store
+Thumbs.db
+nul
+
+# Binary / media
+*.png
+*.jpg
+*.jpeg
+*.zip
+*.tar.gz
+
+# BFG reports
+.bfg-report/
+
+# Credentials & keys (catch-all)
+*.pem
+*.key
+*.p12
+*.pfx
+credentials.json
+token.json

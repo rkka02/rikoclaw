@@ -1,0 +1,4 @@
+interface:
+  display_name: "Mecho Memory"
+  short_description: "Manage core/curated/archival memory with strict field limits and proactive compaction"
+  default_prompt: "Use Mecho via HTTP API only. Enforce field limits exactly: core(description<=1000, detail<=3000), curated(description<=500, detail<=3000), archival(description<=100, detail<=3000). Before writes, deduplicate and aggressively reorganize/compact entries so the most useful information fits within limits."

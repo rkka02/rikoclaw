@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "automation": {
+      "command": "bun",
+      "args": ["run", "/absolute/path/to/automation-mcp/index.ts", "--stdio"]
+    }
+  }
+}
